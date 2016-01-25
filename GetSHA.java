@@ -27,194 +27,75 @@ public class GetSHA
     }
            
     public static void ShowDate(){
+        // Prints the time and date to the creen
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS a");
         String HH_MM = sdf.format(date);
         System.out.println(HH_MM);
     }
     
-    public static String CrackThis(String input)
+    public static String CrackThisVarlen(String input, int maxlength)
     {
+        // brute force of variable length string. Input 'maxlength' to limit password length (and limit how long we spend checking).
         
-        // use this to find all passwords up to six characters in length.
-        // this method calls the other methods. 
-        
-        // don't judge!
-        
-        System.out.println("Started");
-        
-        String attempt = CrackThisOne(input);
-        if(attempt==null){
-            System.out.println("Attempting two-char password");
-            attempt = CrackThisTwo(input);
-            if(attempt==null){
-                System.out.println("Attempting three-char password");
-                attempt = CrackThisThree(input);
-                if(attempt==null){
-                    System.out.println("Attempting four-char password");
-                    attempt = CrackThisFour(input);
-                    if(attempt==null){
-                        System.out.println("Attempting five-char password");
-                        attempt = CrackThisFive(input);
-                        if(attempt==null){
-                            System.out.println("Attempting six-char complex-ish password");
-                            attempt = CrackThisSix(input);
-                        }
-                    }
-                }
+        String result = null;
+        for(int a=1;a<=maxlength;a++)
+        {
+            System.out.println("Checking passwords of length " + Integer.toString(a));
+            result = CrackThisFixedlen(input, a);
+            if(result != null){
+                return result;
             }
         }
-        
-        System.out.println("Finished");
-        ShowDate();
-        
-        return attempt;
-        
-
-        
+        return null;
     }
     
-    public static String CrackThisOne(String input)
-    {
-
+    
+    public static String CrackThisFixedlen(String input, int pwlength)
+    {   
+        // Cracks a hash to find a password of fixed length pwlength.
+        // Called by CrackThisVarlen or call it directly if you know how long it is.
+        
         ShowDate();
-        for(char letter = 'a'; letter <= 'z'; letter++){
-            
-            if (DigestUtils.sha1Hex(Character.toString(letter)).equals(input)){
-                return(Character.toString(letter));
-            }
-        }
+
+        String chars = "abcdefghijklmnopqrstuvwxyz";
        
-        return null;
-    }
-    
-    
-    public static String CrackThisTwo(String input)
-    {
+        // init array
+        int[] ticker = new int[pwlength];
+        for(int a=0; a<pwlength; a++)
+        {  ticker[a] = 0;  }
+       
+
+        int i = pwlength-1;
+        
+        while(i >= 0){
+            
+            // set up my attempt
+            String attempt = "";
+            for(int a=0; a<pwlength;a++)
+            {
+                attempt += chars.charAt(ticker[a]);
+            }
+            
+            // attempt is in 'attempt' - now see if it matches
+            
+            if(DigestUtils.sha1Hex(attempt).equals(input)){
                 ShowDate();
-
-        for(char letter1 = 'a'; letter1 <= 'z'; letter1++){
-            for(char letter2 = 'a'; letter2 <= 'z'; letter2++){
-                
-                if (DigestUtils.sha1Hex(Character.toString(letter1)+Character.toString(letter2)).equals(input)){
-                    return(Character.toString(letter1)+Character.toString(letter2));
-                }
+                return attempt;
+            }
+ 
+            //increment
             
-        }
-    }
-    return null;
-    }
-    
-    public static String CrackThisThree(String input)
-    {
-                ShowDate();
-
-    for(char letter1 = 'a'; letter1 <= 'z'; letter1++){
-        for(char letter2 = 'a'; letter2 <= 'z'; letter2++){
-            for(char letter3 = 'a'; letter3 <= 'z'; letter3++){
-                
-                if (DigestUtils.sha1Hex(Character.toString(letter1)+Character.toString(letter2)+Character.toString(letter3)).equals(input)){
-                    return(Character.toString(letter1)+Character.toString(letter2)+Character.toString(letter3));
-                }
+            if(ticker[i] == chars.length()-1){
+                // reset and move left
+                ticker[i] = 0;
+                i--;
+            } else{
+                // increment
+                ticker[i]++;
+                i = pwlength-1;
             }
         }
-    }
-    return null;
-    }
-    
-    public static String CrackThisFour(String input)
-    {        ShowDate();
-
-        String chars = "abcdefghijklmnopqrstuvwxyz";
-        
-        for(int arraypos1 = 0; arraypos1 < chars.length(); arraypos1++){
-           for(int arraypos2 = 0; arraypos2 < chars.length(); arraypos2++){
-                for(int arraypos3 = 0; arraypos3 < chars.length(); arraypos3++){
-                    for(int arraypos4 = 0; arraypos4 < chars.length(); arraypos4++){
-                        
-                        String char1 = Character.toString(chars.charAt(arraypos1));
-                        String char2 = Character.toString(chars.charAt(arraypos2));
-                        String char3 = Character.toString(chars.charAt(arraypos3));
-                        String char4 = Character.toString(chars.charAt(arraypos4));
-                        
-                        String attempt = char1 + char2 + char3 + char4;
-                        
-                        if(DigestUtils.sha1Hex(attempt).equals(input)){
-                            return attempt;
-                        }
-                    }
-                }
-            }
-        }
-            
-        
-        return null;
-    }
-    public static String CrackThisFive(String input)
-    {        ShowDate();
-
-        String chars = "abcdefghijklmnopqrstuvwxyz";
-        
-        for(int arraypos1 = 0; arraypos1 < chars.length(); arraypos1++){
-           for(int arraypos2 = 0; arraypos2 < chars.length(); arraypos2++){
-                for(int arraypos3 = 0; arraypos3 < chars.length(); arraypos3++){
-                    for(int arraypos4 = 0; arraypos4 < chars.length(); arraypos4++){
-                        for(int arraypos5 = 0; arraypos5 < chars.length(); arraypos5++){
-                        
-                            String char1 = Character.toString(chars.charAt(arraypos1));
-                            String char2 = Character.toString(chars.charAt(arraypos2));
-                            String char3 = Character.toString(chars.charAt(arraypos3));
-                            String char4 = Character.toString(chars.charAt(arraypos4));
-                            String char5 = Character.toString(chars.charAt(arraypos5));
-                            
-                            String attempt = char1 + char2 + char3 + char4 + char5;
-                            
-                            if(DigestUtils.sha1Hex(attempt).equals(input)){
-                                return attempt;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-            
-        
-        return null;
-    }
-    public static String CrackThisSix(String input)
-    {        ShowDate();
-
-        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 .!@";
-        
-        for(int arraypos1 = 0; arraypos1 < chars.length(); arraypos1++){
-           for(int arraypos2 = 0; arraypos2 < chars.length(); arraypos2++){
-                for(int arraypos3 = 0; arraypos3 < chars.length(); arraypos3++){
-                    for(int arraypos4 = 0; arraypos4 < chars.length(); arraypos4++){
-                        for(int arraypos5 = 0; arraypos5 < chars.length(); arraypos5++){
-                            for(int arraypos6 = 0; arraypos6 < chars.length(); arraypos6++){
-                            
-                                String char1 = Character.toString(chars.charAt(arraypos1));
-                                String char2 = Character.toString(chars.charAt(arraypos2));
-                                String char3 = Character.toString(chars.charAt(arraypos3));
-                                String char4 = Character.toString(chars.charAt(arraypos4));
-                                String char5 = Character.toString(chars.charAt(arraypos5));
-                                String char6 = Character.toString(chars.charAt(arraypos6));
-                                
-                                String attempt = char1 + char2 + char3 + char4 + char5 + char6;
-                                
-                                
-                                
-                                if(DigestUtils.sha1Hex(attempt).equals(input)){
-                                    return attempt;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-            
-        
         return null;
     }
     
