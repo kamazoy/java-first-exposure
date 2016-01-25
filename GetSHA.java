@@ -1,6 +1,7 @@
 import org.apache.commons.codec.digest.DigestUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.io.*;
 /**
  * Messing about with password cracking in Java
  * 
@@ -44,6 +45,33 @@ public class GetSHA
                 return result;
             }
         }
+        return null;
+    }
+    
+    public static String CrackFromDictionary(String input) 
+    {
+        System.out.println("Started at " + ShowDate());
+        try {
+            FileReader wordlistFile = new FileReader("words.txt");
+            BufferedReader wordlist = new BufferedReader(wordlistFile);
+            
+            String word;
+            
+            while((word=wordlist.readLine())!=null)
+            {
+                System.out.println("Checked word from dictionary '" + word + "'");
+                if(DigestUtils.sha1Hex(word).equals(input)){
+                    System.out.println("Finished with positive result at " + ShowDate());
+                    System.out.println("Hash '" + input + "' is for word '" + word + "'");
+                    return word;
+                } 
+            }
+            
+        }catch(Exception e){
+            System.out.println("Couldn't open file");
+        }
+        
+        
         return null;
     }
     
