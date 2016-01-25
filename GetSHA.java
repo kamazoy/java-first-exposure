@@ -1,7 +1,8 @@
 import org.apache.commons.codec.digest.DigestUtils;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
- * Messing about with password cracking in Java. This is my first ever exposure to the language.
+ * Messing about with password cracking in Java
  * 
  * @author Daniel Dainty
  * @version 2016-01-25
@@ -20,9 +21,18 @@ public class GetSHA
     public static String GetHash(String input)
     {
         // use this to get a hash from a string input.
-        return DigestUtils.sha1Hex(input);
+        String hash = DigestUtils.sha1Hex(input);
+        System.out.println(hash);
+        return hash;
     }
-            
+           
+    public static void ShowDate(){
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS a");
+        String HH_MM = sdf.format(date);
+        System.out.println(HH_MM);
+    }
+    
     public static String CrackThis(String input)
     {
         
@@ -30,7 +40,9 @@ public class GetSHA
         // this method calls the other methods. 
         
         // don't judge!
-
+        
+        System.out.println("Started");
+        
         String attempt = CrackThisOne(input);
         if(attempt==null){
             System.out.println("Attempting two-char password");
@@ -45,7 +57,7 @@ public class GetSHA
                         System.out.println("Attempting five-char password");
                         attempt = CrackThisFive(input);
                         if(attempt==null){
-                            System.out.println("Attempting six-char password");
+                            System.out.println("Attempting six-char complex-ish password");
                             attempt = CrackThisSix(input);
                         }
                     }
@@ -53,15 +65,19 @@ public class GetSHA
             }
         }
         
+        System.out.println("Finished");
+        ShowDate();
+        
         return attempt;
         
+
         
     }
     
     public static String CrackThisOne(String input)
     {
 
-        
+        ShowDate();
         for(char letter = 'a'; letter <= 'z'; letter++){
             
             if (DigestUtils.sha1Hex(Character.toString(letter)).equals(input)){
@@ -75,7 +91,8 @@ public class GetSHA
     
     public static String CrackThisTwo(String input)
     {
-        
+                ShowDate();
+
         for(char letter1 = 'a'; letter1 <= 'z'; letter1++){
             for(char letter2 = 'a'; letter2 <= 'z'; letter2++){
                 
@@ -90,7 +107,8 @@ public class GetSHA
     
     public static String CrackThisThree(String input)
     {
-        
+                ShowDate();
+
     for(char letter1 = 'a'; letter1 <= 'z'; letter1++){
         for(char letter2 = 'a'; letter2 <= 'z'; letter2++){
             for(char letter3 = 'a'; letter3 <= 'z'; letter3++){
@@ -105,7 +123,8 @@ public class GetSHA
     }
     
     public static String CrackThisFour(String input)
-    {
+    {        ShowDate();
+
         String chars = "abcdefghijklmnopqrstuvwxyz";
         
         for(int arraypos1 = 0; arraypos1 < chars.length(); arraypos1++){
@@ -132,7 +151,8 @@ public class GetSHA
         return null;
     }
     public static String CrackThisFive(String input)
-    {
+    {        ShowDate();
+
         String chars = "abcdefghijklmnopqrstuvwxyz";
         
         for(int arraypos1 = 0; arraypos1 < chars.length(); arraypos1++){
@@ -162,8 +182,9 @@ public class GetSHA
         return null;
     }
     public static String CrackThisSix(String input)
-    {
-        String chars = "abcdefghijklmnopqrstuvwxyz";
+    {        ShowDate();
+
+        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 .!@";
         
         for(int arraypos1 = 0; arraypos1 < chars.length(); arraypos1++){
            for(int arraypos2 = 0; arraypos2 < chars.length(); arraypos2++){
@@ -180,6 +201,8 @@ public class GetSHA
                                 String char6 = Character.toString(chars.charAt(arraypos6));
                                 
                                 String attempt = char1 + char2 + char3 + char4 + char5 + char6;
+                                
+                                
                                 
                                 if(DigestUtils.sha1Hex(attempt).equals(input)){
                                     return attempt;
