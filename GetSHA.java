@@ -10,9 +10,6 @@ import java.util.Date;
  */
 public class GetSHA
 {
-
-
-
     public GetSHA()
     {
         // initialise instance variables
@@ -50,7 +47,6 @@ public class GetSHA
         return null;
     }
     
-    
     public static String CrackThisFixedlen(String input, int pwlength)
     {   
         // Cracks a hash to find a password of fixed length pwlength.
@@ -61,21 +57,13 @@ public class GetSHA
         String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./;'<>?:@[]\\{}|!\"`¬~#£$%^&*()_+-=";
        
         // init array
-        int[] ticker = new int[pwlength];
-        /* for(int a=0; a<pwlength; a++){  ticker[a] = 0;  }    // this is messy...   */
-        Arrays.fill(ticker,0);                                  // this is better
-       
-
+        int[] ticker = new int[pwlength]; // arrays of int are automatically filled with zeroes
         int i = pwlength-1;
         
         while(i >= 0){
-            
             // set up my attempt
             String attempt = "";
-            for(int a=0; a<pwlength;a++)
-            {
-                attempt += chars.charAt(ticker[a]);
-            }
+            for(int a=0; a<pwlength;a++) attempt += chars.charAt(ticker[a]);
             
             // attempt is in 'attempt' - now see if it matches
             
@@ -84,13 +72,14 @@ public class GetSHA
                 return attempt;
             }
  
-            //incrementer
+            //increment the characters in the attempt
+            
             if(ticker[i] == chars.length()-1){
                 // reset and move left
                 ticker[i] = 0;
                 i--;
             } else{
-                // increment
+                // increment and ensure i is looking at the end of the string
                 ticker[i]++;
                 i = pwlength-1;
             }
