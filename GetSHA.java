@@ -26,12 +26,12 @@ public class GetSHA
         return hash;
     }
            
-    public static void ShowDate(){
+    public static String ShowDate(){
         // Prints the time and date to the creen
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SS a");
         String HH_MM = sdf.format(date);
-        System.out.println(HH_MM);
+        return HH_MM;
     }
     
     public static String CrackThisVarlen(String input, int maxlength)
@@ -56,14 +56,14 @@ public class GetSHA
         // Cracks a hash to find a password of fixed length pwlength.
         // Called by CrackThisVarlen or call it directly if you know how long it is.
         
-        ShowDate();
+        System.out.println("Started at " + ShowDate());
 
-        String chars = "abcdefghijklmnopqrstuvwxyz";
+        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./;'<>?:@[]\\{}|!\"`¬~#£$%^&*()_+-=";
        
         // init array
         int[] ticker = new int[pwlength];
-        for(int a=0; a<pwlength; a++)
-        {  ticker[a] = 0;  }
+        /* for(int a=0; a<pwlength; a++){  ticker[a] = 0;  }    // this is messy...   */
+        Arrays.fill(ticker,0);                                  // this is better
        
 
         int i = pwlength-1;
@@ -80,12 +80,11 @@ public class GetSHA
             // attempt is in 'attempt' - now see if it matches
             
             if(DigestUtils.sha1Hex(attempt).equals(input)){
-                ShowDate();
+                System.out.println("Finished with positive result at " + ShowDate());
                 return attempt;
             }
  
-            //increment
-            
+            //incrementer
             if(ticker[i] == chars.length()-1){
                 // reset and move left
                 ticker[i] = 0;
@@ -96,8 +95,7 @@ public class GetSHA
                 i = pwlength-1;
             }
         }
+        System.out.println("Finished with null result at " + ShowDate());
         return null;
     }
-    
-    
 }
